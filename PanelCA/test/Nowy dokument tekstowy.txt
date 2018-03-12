@@ -1,0 +1,1 @@
+usunąć pliki nie zaczynajace sie na A,B,C a konczace sie na cyfre np plik3
