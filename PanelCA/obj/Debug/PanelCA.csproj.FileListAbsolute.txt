@@ -13,3 +13,12 @@ D:\_pwr\__INZ\_visual\PanelCA - last - git\PanelCA\obj\Debug\PanelCA.pdb
 D:\_pwr\__INZ\_visual\PanelCA - last - befgit\PanelCA\bin\Debug\PanelCA.exe.config
 D:\_pwr\__INZ\_visual\PanelCA - last - befgit\PanelCA\obj\Debug\PanelCA.exe
 D:\_pwr\__INZ\_visual\PanelCA - last - befgit\PanelCA\obj\Debug\PanelCA.pdb
+D:\_pwr\__INZ\_visual\PanelCA - last - GITT\PanelCA\bin\Debug\PanelCA.exe.config
+D:\_pwr\__INZ\_visual\PanelCA - last - GITT\PanelCA\obj\Debug\PanelCA.exe
+D:\_pwr\__INZ\_visual\PanelCA - last - GITT\PanelCA\obj\Debug\PanelCA.pdb
+D:\_pwr\__INZ\_visual\PanelCA - last - GITT\PanelCA\bin\Debug\PanelCA.exe
+D:\_pwr\__INZ\_visual\PanelCA - last - GITT\PanelCA\bin\Debug\PanelCA.pdb
+D:\_pwr\__INZ\_visual\PanelCA - last - GITT\PanelCA\obj\Debug\PanelCA.csprojResolveAssemblyReference.cache
+D:\_pwr\__INZ\_visual\PanelCA - last - GITT\PanelCA\obj\Debug\PanelCA.mainForm.resources
+D:\_pwr\__INZ\_visual\PanelCA - last - GITT\PanelCA\obj\Debug\PanelCA.Properties.Resources.resources
+D:\_pwr\__INZ\_visual\PanelCA - last - GITT\PanelCA\obj\Debug\PanelCA.csproj.GenerateResource.Cache
