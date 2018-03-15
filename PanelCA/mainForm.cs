@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;
 using System.Threading;
 			
@@ -81,6 +82,31 @@ namespace PanelCA
 		private void clearButt_Click(object sender, EventArgs e)
 		{
 			sampText.Clear();
+		}
+
+		private void Butt_Click(object sender, EventArgs e)
+		{
+			dataGridView1.Rows.Add();
+			dataGridView1.Rows[0].Cells[0].Value = "elo";
+			dataGridView1.Rows[0].Cells[1].Value = "elo!";
+			dataGridView1.Rows[0].Cells[2].Value = "elo!!";
+
+		}
+
+		private void button2_Click(object sender, EventArgs e)
+		{
+			//StreamReader file = SaveFileDialog
+			SaveFileDialog dialog = new SaveFileDialog();
+			dialog.Filter = "csv|*.csv|All files|*.*";
+			dialog.ShowDialog();
+			string str = dialog.FileName;
+			File.Delete(str);
+			string line = dataGridView1.Rows[0].Cells[0].Value.ToString();
+			line += ";" + dataGridView1.Rows[0].Cells[1].Value.ToString();
+			line += ";" + dataGridView1.Rows[0].Cells[2].Value.ToString();
+			using (StreamWriter file = File.CreateText(str))
+				file.WriteLine(line);
+			
 		}
 	}
 }

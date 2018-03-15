@@ -109,6 +109,8 @@
 			this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.Butt = new System.Windows.Forms.Button();
+			this.button2 = new System.Windows.Forms.Button();
 			this.comGBox.SuspendLayout();
 			this.dacGBox.SuspendLayout();
 			this.groupBox1.SuspendLayout();
@@ -1021,6 +1023,7 @@
 			// 
 			// dataGridView1
 			// 
+			this.dataGridView1.AllowUserToAddRows = false;
 			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column1,
@@ -1028,29 +1031,55 @@
             this.Column3});
 			this.dataGridView1.Location = new System.Drawing.Point(643, 32);
 			this.dataGridView1.Name = "dataGridView1";
-			this.dataGridView1.Size = new System.Drawing.Size(748, 503);
+			this.dataGridView1.RowHeadersVisible = false;
+			this.dataGridView1.Size = new System.Drawing.Size(390, 384);
 			this.dataGridView1.TabIndex = 59;
 			// 
 			// Column1
 			// 
-			this.Column1.HeaderText = "Column1";
+			this.Column1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+			this.Column1.HeaderText = "RegDAC(b)";
 			this.Column1.Name = "Column1";
 			// 
 			// Column2
 			// 
-			this.Column2.HeaderText = "Column2";
+			this.Column2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+			this.Column2.HeaderText = "Uteor[V]";
 			this.Column2.Name = "Column2";
 			// 
 			// Column3
 			// 
-			this.Column3.HeaderText = "Column3";
+			this.Column3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+			this.Column3.HeaderText = "Uzm[V]";
 			this.Column3.Name = "Column3";
+			// 
+			// Butt
+			// 
+			this.Butt.Location = new System.Drawing.Point(666, 439);
+			this.Butt.Name = "Butt";
+			this.Butt.Size = new System.Drawing.Size(75, 23);
+			this.Butt.TabIndex = 60;
+			this.Butt.Text = "BUT";
+			this.Butt.UseVisualStyleBackColor = true;
+			this.Butt.Click += new System.EventHandler(this.Butt_Click);
+			// 
+			// button2
+			// 
+			this.button2.Location = new System.Drawing.Point(772, 439);
+			this.button2.Name = "button2";
+			this.button2.Size = new System.Drawing.Size(75, 23);
+			this.button2.TabIndex = 61;
+			this.button2.Text = "BUT";
+			this.button2.UseVisualStyleBackColor = true;
+			this.button2.Click += new System.EventHandler(this.button2_Click);
 			// 
 			// mainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1436, 574);
+			this.Controls.Add(this.button2);
+			this.Controls.Add(this.Butt);
 			this.Controls.Add(this.dataGridView1);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.dacGBox);
@@ -1161,6 +1190,8 @@
 		private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
 		private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
 		private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
+		private System.Windows.Forms.Button Butt;
+		private System.Windows.Forms.Button button2;
 	}
 }
 
