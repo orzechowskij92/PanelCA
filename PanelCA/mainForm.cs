@@ -8,7 +8,7 @@ namespace PanelCA
 {
 	public partial class mainForm : Form
 	{
-		const string NL = "\r\n"; // sekwencja nowej linii w komponencie Text-Multiline
+		string NL = Environment.NewLine; // sekwencja nowej linii w komponencie Text-Multiline
 		public Com com; //Obiektu portu COM/UART
 		public Dac dac; //Obiekt przetornika DAC na platformie sprzętowej
 
@@ -20,7 +20,7 @@ namespace PanelCA
 			bitsChecks = new CheckBox[] { b0Check, b1Check, b2Check, 
 				b3Check, b4Check, b5Check, b6Check, b7Check, b8Check,
 				b9Check, b10Check, b11Check };
-			unitCBox.SelectedIndex = 0;
+			//unitCBox.SelectedIndex = 0;
 		}
 
 		private void connButt_Click(object sender, EventArgs e)
@@ -70,43 +70,51 @@ namespace PanelCA
 
 		private void sampText_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			e.Handled = !((char.IsDigit(e.KeyChar) || char.IsControl(e.KeyChar)) 
-				&& (sampText.Lines.Length <= 10 || char.IsControl(e.KeyChar)));
-		}
-
-		private void delText_KeyPress(object sender, KeyPressEventArgs e)
-		{
-			e.Handled = !(char.IsDigit(e.KeyChar) || char.IsControl(e.KeyChar));
+			e.Handled = !((char.IsDigit(e.KeyChar) || char.IsControl(e.KeyChar)) || char.IsControl(e.KeyChar));
 		}
 
 		private void clearButt_Click(object sender, EventArgs e)
 		{
 			sampText.Clear();
+			step = 0;
 		}
 
+		int x = 0;
 		private void Butt_Click(object sender, EventArgs e)
 		{
-			dataGridView1.Rows.Add();
-			dataGridView1.Rows[0].Cells[0].Value = "elo";
-			dataGridView1.Rows[0].Cells[1].Value = "elo!";
-			dataGridView1.Rows[0].Cells[2].Value = "elo!!";
+			dacGrid.Rows.Add();
+			dacGrid.Rows[x].Cells[0].Value = "elo";
+			dacGrid.Rows[x].Cells[1].Value = "elo!";
+			dacGrid.Rows[x++].Cells[2].Value = "elo!!";
+
 
 		}
 
 		private void button2_Click(object sender, EventArgs e)
 		{
-			//StreamReader file = SaveFileDialog
 			SaveFileDialog dialog = new SaveFileDialog();
 			dialog.Filter = "csv|*.csv|All files|*.*";
 			dialog.ShowDialog();
-			string str = dialog.FileName;
-			File.Delete(str);
-			string line = dataGridView1.Rows[0].Cells[0].Value.ToString();
-			line += ";" + dataGridView1.Rows[0].Cells[1].Value.ToString();
-			line += ";" + dataGridView1.Rows[0].Cells[2].Value.ToString();
-			using (StreamWriter file = File.CreateText(str))
-				file.WriteLine(line);
 			
+			string path = dialog.FileName;
+			if (File.Exists(path)) File.Delete(path);
+
+			using (StreamWriter file = File.CreateText(path)) {
+				for (int row = 0; row < dacGrid.Rows.Count; row++)
+				{
+					string line2 = dacGrid.Rows[row].Cells[0].Value.ToString();
+
+					line2 += ";" + dacGrid.Rows[row].Cells[1].Value.ToString();
+					line2 += ";" + dacGrid.Rows[row].Cells[2].Value.ToString() + NL;
+					file.WriteLine(line2);
+				}
+			}
+			
+		}
+
+		private void rekordsCheck_CheckedChanged(object sender, EventArgs e)
+		{
+			dacGrid.Enabled = rekordsCheck.Checked;
 		}
 	}
 }

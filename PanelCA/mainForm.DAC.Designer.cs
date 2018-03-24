@@ -2,7 +2,6 @@
 using System.Windows.Forms;
 using System.Threading;
 
-enum Days { Sun, Mon, Tue, Wed, Thu, Fri, Sat };
 
 namespace PanelCA
 {
@@ -81,7 +80,17 @@ namespace PanelCA
 			e.Handled = !(char.IsDigit(e.KeyChar) || char.IsControl(e.KeyChar) 
 				|| ((e.KeyChar | ' ') >= 'a' && (e.KeyChar | ' ') <= 'f'));
 		}
-	
+
+		void bitsReload()
+		//Ustawia wartość kontrolek typu Check dla poszczególnych bitów. Porównuje wynik operacji
+		//maskowania dla kolejnych potęg dwójki, wpisuje do własciwości Enable kontroki oraz
+		//ustawia znak na kontrolce.
+		{
+			for (int i = 0, j = 1; i < 12; j <<= 1, i++)
+				bitsChecks[i].Text = (bitsChecks[i].Checked = ((samp & j) != 0) ) ? "1" : "0";
+			
+			vddText_TextChanged(this, null);
+		}
 		private void setSamp(int newSamp)
 		//Ustawienie zewnetrzne wartosci probki, uzywane przy tabeli wartości.
 		{
@@ -91,34 +100,25 @@ namespace PanelCA
 			hexText.Text = Convert.ToString(samp, 16);
 			//Aktualizacja bitBoeardu
 			bitsReload();
+			dac.setSamp(samp);
 		}
 
-		void bitsReload()
-		//Ustawia wartość kontrolek typu Check dla poszczególnych bitów. Porównuje wynik operacji
-		//maskowania dla kolejnych potęg dwójki, wpisuje do własciwości Enable kontroki oraz
-		//ustawia znak na kontrolce.
-		{
-			int i = 0;
-			foreach (CheckBox bit in bitsChecks)
-				bit.Text = (bit.Checked = (samp & (1 << i++)) > 0) ? "1" : "0";
-			
-			vddText_TextChanged(this, null);
-
-		}
-		private void genButt_Click(object sender, EventArgs e)
+		//int step = 0;
+		const string arrowStr = " <---";
+		private void nextButt_Click(object sender, EventArgs e)
 		{
 			//pobieranie pola z wartościami
-			string[] lines = sampText.Lines; //obiekt pomocniczy
-			int len = Convert.ToUInt16(lines.Length); //ilosc wierszy
-			if (len == 0) return;
+			string[] lines = sampText.Lines; //zawarość pola
+			int rowsCnt = Convert.ToUInt16(lines.Length); //ilosc wierszy
+			if (rowsCnt == 0 || step >= rowsCnt) return; //spr czy nie jest na końcu
+			while (lines[step] == "") if (++step == rowsCnt) return; //inoruj puste linie
 
-			int[] arr = new int[len]; //wartosci probek
-			
-			//pobranie wartosci opoznienia
-			if (delText.Text == "") delText.Text = "0";
-			int delay = Convert.ToInt32(delText.Text) 
-				* ((unitCBox.SelectedIndex == 0) ? 1000 : 1); 
-
+			//[] arr = new int[len]; //wartosci probek
+			int beforeStep = step - 1;
+			if (step > 0 && lines[beforeStep].Contains(arrowStr))
+				lines[beforeStep] = lines[beforeStep].Substring(0, lines[beforeStep].Length - arrowStr.Length);
+			int samp = Convert.ToInt32(lines[step]);
+			/*
 			//konwersja wartosci
 			int j = 0;//indeks wartosci probek (bez pustych linii)
 			
@@ -126,14 +126,22 @@ namespace PanelCA
 				if (lines[i] == "") j--;
 				else arr[j] = Convert.ToInt32(lines[i]);
 			}
-			
-			if (j == 0) return;
+			*/
 
+			//if (j == 0) return;
+			/*
 			consSendText.AppendText("Zadaj serię " + j +" pomiarow..." + 
 				NL + "Opoznienie = " + delay + " [ms]" + NL);
+			*/
 			//wysylanie danych sesji
-			dac.setSamps(delay, arr, j);
-			
+			//dac.setSamps(delay, arr, j);
+			//dac.setSamp(samp);
+			lines[step++] += arrowStr;
+			//if (++step == rowsCnt) step = 0;
+			sampText.Lines = lines;
+			this.Refresh();
+			setSamp(samp);
+			/*
 			//Wskaznik postepu sesji
 			string line = "";
 			j = 0;
@@ -147,18 +155,73 @@ namespace PanelCA
 				Thread.Sleep (delay);
 				
 				lines[i] = lines[i].Substring(0, lines[i].Length - 4);
-				sampText.Lines = lines;
-			}
+				sampText.Lines = lines;*/
+			//}
 		}
+		/*private void backButt_Click(object sender, EventArgs e)
+		{
+			string[] lines = sampText.Lines; //zawarość pola
+			int rowsCnt = Convert.ToUInt16(lines.Length); //ilosc wierszy
+			if (rowsCnt == 0 || step > 0) return; //spr czy nie jest na poczatku
+			while (lines[step] == "") if (--step == 0) return; //inoruj puste linie
+
+		}*/
 		
+		int step = -1;
+		private void nextbackButt_Click(object sender, EventArgs e)
+		{
+			string[] lines = sampText.Lines; //zawarość pola
+
+			int dir = ((sender as Button).Name == "nextButt") ? 1 : -1;
+			int rowsCnt = Convert.ToInt32(lines.Length); //ilosc wierszy, liczona od 0
+			if (dir == -1 && step == -1 || dir == 1 && step == rowsCnt) return;
+
+			//Spr czy aktualnie jest wybrany element
+			if (step > -1 && step < rowsCnt) {
+				//Usuń znacznik wybrania elementu w sesji
+				if (lines[step].Contains(arrowStr))
+					lines[step] = lines[step].Substring(0, lines[step].Length - arrowStr.Length);
+			}
+
+			step += dir;
+			if (dir == -1 && step == (rowsCnt - 1) && lines[step].Contains(arrowStr)) {
+				lines[step] = lines[step].Substring(0, lines[step].Length - arrowStr.Length);
+				step += dir;
+			} 
+			else if (dir == 1 && step == 0 && lines[step].Contains(arrowStr)) {
+				lines[step] = lines[step].Substring(0, lines[step].Length - arrowStr.Length);
+				step += dir;
+			}
+				
+			if (step == -1 || step == rowsCnt) return; //granice poczatku i konca sesji
+
+			//przejdz po pustych liniach, az do konca listy
+			while (lines[step] == "") if ((step += dir) == -1 || step == rowsCnt) return;
+
+			//Ustaw wyjscie DAC, przeładuj pozostałe kontrolki stanu DAC
+			setSamp (Convert.ToInt32(lines[step]));
+
+			//Dodanie znacznika postepu sesji
+			lines[step] += arrowStr;
+
+			//Odswierz liste
+			sampText.Lines = lines;
+			this.Refresh();
+		}
+				
 		private void ringButt_Click(object sender, EventArgs e)
 		{
 			sampText.Clear();
 
 			for (int bit = 1, i = 0; bit <= 0x0800; bit <<= 1, i++)
-				sampText.AppendText(Convert.ToString (bit) + NL);
-		}
+				sampText.AppendText(Convert.ToString (bit) + (bit < 0x0800 ? NL : ""));
+				
 
+		}
+		private void dacScroll_Scroll(object sender, ScrollEventArgs e)
+		{
+			setSamp(dacScroll.Value);
+		}
 		private void button1_Click(object sender, EventArgs e)
 		{
 			sampText.Clear();
@@ -167,6 +230,6 @@ namespace PanelCA
 				sampText.AppendText (Convert.ToString(samp) + NL);
 			}
 		}
-
+		
 	}
 }

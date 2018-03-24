@@ -76,7 +76,7 @@ namespace PanelCA
 
 		public string sendStr(string comand, bool response)
 		{
-			if (connected == false) return "";
+			if (connected == false) return comand;
 		
 			SP.WriteLine (comand);
 			if (!response) return "";
