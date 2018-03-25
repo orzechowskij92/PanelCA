@@ -55,6 +55,7 @@ namespace PanelCA
 		{
 			string comand = "\x11" + sampTo2Chars (samp);
 			console.Text += com.sendStr(comand, true) + NL;
+			
 		}
 		
 		//-----------------------------------------------------------------------------

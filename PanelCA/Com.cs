@@ -26,7 +26,7 @@ namespace PanelCA
 		public Com()
 		{
 			SP.NewLine = "\r\n";
-			SP.Encoding = System.Text.Encoding.GetEncoding(28591);
+			SP.Encoding = Encoding.GetEncoding(28591);
 		}
 	
 		//*****************************************************************************
@@ -83,7 +83,7 @@ namespace PanelCA
 			
 			while (SP.ReadBufferSize == 0) System.Threading.Thread.Sleep(30);
 			return SP.ReadLine();
-		}
+			}
 		
 		//-----------------------------------------------------------------------------
 

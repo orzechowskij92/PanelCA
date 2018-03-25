@@ -24,14 +24,17 @@ namespace PanelCA
 					//samp += mult * Convert.ToInt32 (Math.Pow(2.0, i));
 					samp += mult * val;
 
-			//Aktualizacja pól DEC i HEX
+			//Aktualizacja pól DEC, HEX i U0teor
 			decText.Text = Convert.ToString(samp);
 			hexText.Text = Convert.ToString(samp, 16);
-
-			dac.setSamp(samp);
 			if (vdd > 0 ) vddText_TextChanged(this, null);
+
+			//Ustawienie próbki i wypisanie danych do tablicy
+			dac.setSamp(samp);
+			addRow();
 		}
 
+		Single u0teor = 0;
 		private void vddText_TextChanged(object sender, EventArgs e)
 		{
 			if (vddText.Text == "") {
@@ -42,8 +45,9 @@ namespace PanelCA
 			else if (!u0Label.Visible) u0Label.Visible = true; 
 			
 			vdd = Convert.ToSingle(vddText.Text);
-			decimal d = Convert.ToDecimal ((float)samp / (float)4095.0 * vdd);
-			d = Decimal.Round(d, 4);
+			Decimal d = Decimal.Round(Convert.ToDecimal ((float)samp / (float)4095.0 * vdd), 4);
+			
+			u0teor = Convert.ToSingle(d);
 			u0Label.Text = "U0 = " + d.ToString() + "[V]";
 			
 		}
@@ -53,8 +57,12 @@ namespace PanelCA
 			if (hexText.Text == "") return;
 			samp = Convert.ToInt32(hexText.Text, 16);
 			decText.Text = Convert.ToString(samp);
+			
 			bitsReload();
+
+			//Ustawienie próbki i wypisanie danych do tablicy
 			dac.setSamp(samp);
+			addRow();
 		}
 
 		private void decText_KeyUp(object sender, KeyEventArgs e)
@@ -62,8 +70,12 @@ namespace PanelCA
 			if (decText.Text == "") return;
 			samp = Convert.ToInt32(decText.Text);
 			hexText.Text = Convert.ToString(samp, 16);
+			
 			bitsReload();
+
+			//Ustawienie próbki i wypisanie danych do tablicy
 			dac.setSamp(samp);
+			addRow();
 		}
 
 		private void vddText_KeyPress(object sender, KeyPressEventArgs e)
@@ -95,16 +107,21 @@ namespace PanelCA
 		//Ustawienie zewnetrzne wartosci probki, uzywane przy tabeli wartości.
 		{
 			samp = newSamp;
+			
 			//Aktualizacja pól DEC i HEX
 			decText.Text = Convert.ToString(samp);
 			hexText.Text = Convert.ToString(samp, 16);
+			
 			//Aktualizacja bitBoeardu
 			bitsReload();
+
+			//Ustawienie próbki i wypisanie danych do tablicy
 			dac.setSamp(samp);
+			addRow();
 		}
 
 		//int step = 0;
-		const string arrowStr = " <---";
+		const string arrowStr = " \u0011\u0006\u0006\u0006";
 		private void nextButt_Click(object sender, EventArgs e)
 		{
 			//pobieranie pola z wartościami

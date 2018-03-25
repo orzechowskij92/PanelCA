@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
 			this.portsCBox = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.connButt = new System.Windows.Forms.Button();
@@ -112,8 +112,7 @@
 			this.regValdCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.Butt = new System.Windows.Forms.Button();
-			this.button2 = new System.Windows.Forms.Button();
+			this.exportButt = new System.Windows.Forms.Button();
 			this.rekordsCheck = new System.Windows.Forms.CheckBox();
 			this.comGBox.SuspendLayout();
 			this.dacGBox.SuspendLayout();
@@ -221,6 +220,7 @@
 			this.consRecivText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.consRecivText.Size = new System.Drawing.Size(170, 89);
 			this.consRecivText.TabIndex = 1;
+			this.consRecivText.TextChanged += new System.EventHandler(this.consSendText_TextChanged_1);
 			// 
 			// consSendText
 			// 
@@ -232,6 +232,7 @@
 			this.consSendText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.consSendText.Size = new System.Drawing.Size(170, 89);
 			this.consSendText.TabIndex = 0;
+			this.consSendText.TextChanged += new System.EventHandler(this.consSendText_TextChanged_1);
 			// 
 			// dacGBox
 			// 
@@ -474,7 +475,7 @@
 			this.groupBox1.Controls.Add(this.label11);
 			this.groupBox1.Controls.Add(this.label24);
 			this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.groupBox1.Location = new System.Drawing.Point(223, 347);
+			this.groupBox1.Location = new System.Drawing.Point(223, 360);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(414, 231);
 			this.groupBox1.TabIndex = 58;
@@ -483,10 +484,12 @@
 			// 
 			// dacScroll
 			// 
+			this.dacScroll.LargeChange = 100;
 			this.dacScroll.Location = new System.Drawing.Point(19, 192);
-			this.dacScroll.Maximum = 4104;
+			this.dacScroll.Maximum = 4194;
 			this.dacScroll.Name = "dacScroll";
 			this.dacScroll.Size = new System.Drawing.Size(330, 17);
+			this.dacScroll.SmallChange = 100;
 			this.dacScroll.TabIndex = 62;
 			this.dacScroll.Scroll += new System.Windows.Forms.ScrollEventHandler(this.dacScroll_Scroll);
 			// 
@@ -1015,14 +1018,14 @@
 			this.dacGrid.AllowUserToAddRows = false;
 			this.dacGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
 			this.dacGrid.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
-			dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
-			dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-			dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-			dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-			dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-			dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-			this.dacGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+			dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
+			dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+			dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+			dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+			dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+			dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+			this.dacGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
 			this.dacGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
 			this.dacGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column1,
@@ -1031,26 +1034,26 @@
             this.Column3});
 			this.dacGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
 			this.dacGrid.Enabled = false;
-			this.dacGrid.Location = new System.Drawing.Point(229, 154);
+			this.dacGrid.Location = new System.Drawing.Point(229, 167);
 			this.dacGrid.Name = "dacGrid";
-			dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
-			dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
-			dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
-			dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-			dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-			dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-			this.dacGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle5;
+			dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
+			dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+			dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+			dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+			dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+			dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+			this.dacGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
 			this.dacGrid.RowHeadersVisible = false;
 			this.dacGrid.RowHeadersWidth = 30;
 			this.dacGrid.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-			dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
-			this.dacGrid.RowsDefaultCellStyle = dataGridViewCellStyle6;
+			dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
+			this.dacGrid.RowsDefaultCellStyle = dataGridViewCellStyle3;
 			this.dacGrid.RowTemplate.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
 			this.dacGrid.RowTemplate.Height = 17;
-			this.dacGrid.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
+			this.dacGrid.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.dacGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-			this.dacGrid.Size = new System.Drawing.Size(374, 140);
+			this.dacGrid.Size = new System.Drawing.Size(374, 187);
 			this.dacGrid.TabIndex = 59;
 			// 
 			// Column1
@@ -1085,31 +1088,21 @@
 			this.Column3.Resizable = System.Windows.Forms.DataGridViewTriState.False;
 			this.Column3.Width = 93;
 			// 
-			// Butt
+			// exportButt
 			// 
-			this.Butt.Location = new System.Drawing.Point(245, 300);
-			this.Butt.Name = "Butt";
-			this.Butt.Size = new System.Drawing.Size(75, 23);
-			this.Butt.TabIndex = 60;
-			this.Butt.Text = "add row";
-			this.Butt.UseVisualStyleBackColor = true;
-			this.Butt.Click += new System.EventHandler(this.Butt_Click);
-			// 
-			// button2
-			// 
-			this.button2.Location = new System.Drawing.Point(345, 300);
-			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(75, 23);
-			this.button2.TabIndex = 61;
-			this.button2.Text = "Exportuj";
-			this.button2.UseVisualStyleBackColor = true;
-			this.button2.Click += new System.EventHandler(this.button2_Click);
+			this.exportButt.Location = new System.Drawing.Point(545, 144);
+			this.exportButt.Name = "exportButt";
+			this.exportButt.Size = new System.Drawing.Size(59, 21);
+			this.exportButt.TabIndex = 61;
+			this.exportButt.Text = "Exportuj";
+			this.exportButt.UseVisualStyleBackColor = true;
+			this.exportButt.Click += new System.EventHandler(this.exportButt_Click);
 			// 
 			// rekordsCheck
 			// 
 			this.rekordsCheck.AutoSize = true;
 			this.rekordsCheck.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.rekordsCheck.Location = new System.Drawing.Point(229, 134);
+			this.rekordsCheck.Location = new System.Drawing.Point(229, 147);
 			this.rekordsCheck.Name = "rekordsCheck";
 			this.rekordsCheck.Size = new System.Drawing.Size(118, 19);
 			this.rekordsCheck.TabIndex = 10;
@@ -1123,8 +1116,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(650, 614);
 			this.Controls.Add(this.rekordsCheck);
-			this.Controls.Add(this.button2);
-			this.Controls.Add(this.Butt);
+			this.Controls.Add(this.exportButt);
 			this.Controls.Add(this.dacGrid);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.dacGBox);
@@ -1229,8 +1221,7 @@
 		private System.Windows.Forms.Label label11;
 		private System.Windows.Forms.Label label24;
 		private System.Windows.Forms.DataGridView dacGrid;
-		private System.Windows.Forms.Button Butt;
-		private System.Windows.Forms.Button button2;
+		private System.Windows.Forms.Button exportButt;
 		private System.Windows.Forms.CheckBox rekordsCheck;
 		private System.Windows.Forms.HScrollBar dacScroll;
 		private System.Windows.Forms.DataGridViewTextBoxColumn Column1;

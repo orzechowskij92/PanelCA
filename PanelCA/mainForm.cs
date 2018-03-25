@@ -79,18 +79,32 @@ namespace PanelCA
 			step = 0;
 		}
 
-		int x = 0;
 		private void Butt_Click(object sender, EventArgs e)
 		{
-			dacGrid.Rows.Add();
-			dacGrid.Rows[x].Cells[0].Value = "elo";
-			dacGrid.Rows[x].Cells[1].Value = "elo!";
-			dacGrid.Rows[x++].Cells[2].Value = "elo!!";
-
-
+			int rows = dacGrid.Rows.Add();
+			//BIN
+			dacGrid.Rows[rows].Cells[0].Value = Convert.ToString(samp, 2);
+			//DEC
+			dacGrid.Rows[rows].Cells[1].Value = Convert.ToString(samp);
+			//U0teor
+			dacGrid.Rows[rows].Cells[2].Value = Convert.ToString (u0teor);
+			//U0zm
+			dacGrid.Rows[rows].Cells[3].Value = "N/C";
 		}
-
-		private void button2_Click(object sender, EventArgs e)
+		private void addRow()
+		{
+			if (!rekordsCheck.Checked) return;
+			int rows = dacGrid.Rows.Add();
+			//BIN
+			dacGrid.Rows[rows].Cells[0].Value = Convert.ToString(samp, 2);
+			//DEC
+			dacGrid.Rows[rows].Cells[1].Value = Convert.ToString(samp);
+			//U0teor
+			dacGrid.Rows[rows].Cells[2].Value = Convert.ToString (u0teor);
+			//U0zm
+			dacGrid.Rows[rows].Cells[3].Value = "N/C";
+		}
+		private void exportButt_Click(object sender, EventArgs e)
 		{
 			SaveFileDialog dialog = new SaveFileDialog();
 			dialog.Filter = "csv|*.csv|All files|*.*";
@@ -100,13 +114,19 @@ namespace PanelCA
 			if (File.Exists(path)) File.Delete(path);
 
 			using (StreamWriter file = File.CreateText(path)) {
+				file.WriteLine("RegVal(BIN);RegVal(DEC);U0teor[V];U0zm[V]");
 				for (int row = 0; row < dacGrid.Rows.Count; row++)
 				{
-					string line2 = dacGrid.Rows[row].Cells[0].Value.ToString();
-
-					line2 += ";" + dacGrid.Rows[row].Cells[1].Value.ToString();
-					line2 += ";" + dacGrid.Rows[row].Cells[2].Value.ToString() + NL;
-					file.WriteLine(line2);
+					string line = "";
+					try
+					{
+						line = dacGrid.Rows[row].Cells[0].Value.ToString()
+							+ ";" + dacGrid.Rows[row].Cells[1].Value.ToString()
+							+ ";" + dacGrid.Rows[row].Cells[2].Value.ToString()
+							+ ";" + dacGrid.Rows[row].Cells[3].Value.ToString();
+					}
+					catch (Exception) { };
+					file.WriteLine(line);
 				}
 			}
 			
@@ -115,6 +135,14 @@ namespace PanelCA
 		private void rekordsCheck_CheckedChanged(object sender, EventArgs e)
 		{
 			dacGrid.Enabled = rekordsCheck.Checked;
+		}
+
+
+		private void consSendText_TextChanged_1(object sender, EventArgs e)
+		{
+			TextBox sndr = sender as TextBox;
+			sndr.SelectionStart = consRecivText.Text.Length;
+			sndr.ScrollToCaret();
 		}
 	}
 }
