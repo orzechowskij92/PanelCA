@@ -11,8 +11,10 @@ namespace PanelCA
 		//*****************************************************************************
 
 		public Com com; //Obiekt komunikacji po porcie COM
-		System.Windows.Forms.TextBox console; //Konsola do wypisywania inf zwrotnej
-		const string NL = "\r\n"; //Nowa linia dla komunikacji z platformą
+		System.Windows.Forms.TextBox consoleResp, consoleReq; //Konsola do wypisywania inf zwrotnej
+		//private string NL = "\r\n"; //Nowa linia dla komunikacji z platformą
+		private string NLform; //Nowa linia dla komunikacji z platformą
+		
 		const byte MASKL =  0x00FF; //Maska dla młodszej części słowa dla DAC 
 		const byte MASKH =  0x000F; //Maska dla starszej części słowa dla DAC
 		
@@ -20,10 +22,13 @@ namespace PanelCA
 		//Konstruktor parametryczy, przyjmuje jako parametry: obiekt typu Com umożliwiający
 		//wysłanie rozkazów do platformy, obiekt TextBox do wypisywania informacji zwrotnej.
 		
-		public Dac (Com com, System.Windows.Forms.TextBox console) 
+		public Dac (Com com, System.Windows.Forms.TextBox consoleReq, System.Windows.Forms.TextBox consoleResp, mainForm form) 
 		{
+			NLform = form.NL;
 			this.com = com;
-			this.console = console;
+			this.consoleResp = consoleResp;
+			this.consoleReq = consoleReq;
+
 		}
 		
 		//*****************************************************************************
@@ -51,10 +56,22 @@ namespace PanelCA
 		//-----------------------------------------------------------------------------
 		//Składa rozkaz dla trybu ustawiania pojedyńczej próbki, wypisuje wiadomość powrotną
 		//w konsoli (TextBox)
-		public void setSamp (int samp)
+		public int setSamp (int samp, bool returnADC)
 		{
-			string comand = "\x11" + sampTo2Chars (samp);
-			console.Text += com.sendStr(comand, true) + NL;
+			consoleReq.Text += "Ustaw DAC: " + Convert.ToString(samp) + NLform;
+			  
+			if (returnADC) {
+				string response = "", comand = "\x11" + "\x01" + sampTo2Chars (samp);
+				consoleResp.Text += (response = com.sendStr(comand, true) + NLform);
+				int pos = response.IndexOf("ADC:") + 5;
+				response = response.Substring(pos);
+				return Convert.ToInt32(response);
+			}
+			else {
+				string comand = "\x11" + "\x02" + sampTo2Chars (samp);
+				com.sendStr(comand, false);
+				return -1;
+			}
 			
 		}
 		
@@ -74,7 +91,7 @@ namespace PanelCA
 				Thread.Sleep(3);
 			}
 			//Wysyłanie ostatniej próbki
-			console.Text += com.sendStr(sampTo2Chars(arr[len]), true);
+			consoleResp.Text += com.sendStr(sampTo2Chars(arr[len]), true);
 		
 		}
 	}

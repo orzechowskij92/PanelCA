@@ -25,6 +25,9 @@ namespace PanelCA
 	
 		public Com()
 		{
+			SP.RtsEnable = false;
+			SP.DtrEnable = false;
+			
 			SP.NewLine = "\r\n";
 			SP.Encoding = Encoding.GetEncoding(28591);
 		}
@@ -47,6 +50,7 @@ namespace PanelCA
 		{
 			SP.PortName = mainPort = port;
 			SP.Open();
+			bool elo = SP.CtsHolding;
 			connected = SP.IsOpen;
 		}
 		
@@ -76,10 +80,10 @@ namespace PanelCA
 
 		public string sendStr(string comand, bool response)
 		{
-			if (connected == false) return comand;
-		
 			SP.WriteLine (comand);
 			if (!response) return "";
+			
+			if (connected == false) return "N/C";
 			
 			while (SP.ReadBufferSize == 0) System.Threading.Thread.Sleep(30);
 			return SP.ReadLine();

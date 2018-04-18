@@ -8,19 +8,18 @@ namespace PanelCA
 {
 	public partial class mainForm : Form
 	{
-		string NL = Environment.NewLine; // sekwencja nowej linii w komponencie Text-Multiline
+		public string NL = Environment.NewLine; // sekwencja nowej linii w komponencie Text-Multiline
 		public Com com; //Obiektu portu COM/UART
 		public Dac dac; //Obiekt przetornika DAC na platformie sprzętowej
 
 		public mainForm()
-		{
+		{ 
 			InitializeComponent();
 			com = new Com();
-			dac = new Dac(com, consRecivText);
+			dac = new Dac(com, consSendText, consRecivText, this);
 			bitsChecks = new CheckBox[] { b0Check, b1Check, b2Check, 
 				b3Check, b4Check, b5Check, b6Check, b7Check, b8Check,
 				b9Check, b10Check, b11Check };
-			//unitCBox.SelectedIndex = 0;
 		}
 
 		private void connButt_Click(object sender, EventArgs e)
@@ -79,30 +78,27 @@ namespace PanelCA
 			step = 0;
 		}
 
-		private void Butt_Click(object sender, EventArgs e)
-		{
-			int rows = dacGrid.Rows.Add();
-			//BIN
-			dacGrid.Rows[rows].Cells[0].Value = Convert.ToString(samp, 2);
-			//DEC
-			dacGrid.Rows[rows].Cells[1].Value = Convert.ToString(samp);
-			//U0teor
-			dacGrid.Rows[rows].Cells[2].Value = Convert.ToString (u0teor);
-			//U0zm
-			dacGrid.Rows[rows].Cells[3].Value = "N/C";
-		}
-		private void addRow()
+		
+		private void addRow(int adcVal)
 		{
 			if (!rekordsCheck.Checked) return;
 			int rows = dacGrid.Rows.Add();
 			//BIN
 			dacGrid.Rows[rows].Cells[0].Value = Convert.ToString(samp, 2);
+			
 			//DEC
 			dacGrid.Rows[rows].Cells[1].Value = Convert.ToString(samp);
+			
 			//U0teor
-			dacGrid.Rows[rows].Cells[2].Value = Convert.ToString (u0teor);
+			dacGrid.Rows[rows].Cells[2].Value = Convert.ToString(u0teor);
+
 			//U0zm
-			dacGrid.Rows[rows].Cells[3].Value = "N/C";
+			if (adcVal != -1) {
+				Decimal d = decimal.Round(Convert.ToDecimal((float)adcVal / (float)1023.0 * vdd), 4);
+				dacGrid.Rows[rows].Cells[3].Value = Convert.ToString(Convert.ToSingle(d));
+			}
+			else
+				dacGrid.Rows[rows].Cells[3].Value = "N/C";
 		}
 		private void exportButt_Click(object sender, EventArgs e)
 		{
@@ -141,7 +137,7 @@ namespace PanelCA
 		private void consSendText_TextChanged_1(object sender, EventArgs e)
 		{
 			TextBox sndr = sender as TextBox;
-			sndr.SelectionStart = consRecivText.Text.Length;
+			sndr.SelectionStart = sndr.Text.Length;
 			sndr.ScrollToCaret();
 		}
 	}

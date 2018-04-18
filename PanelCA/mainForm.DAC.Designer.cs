@@ -10,7 +10,7 @@ namespace PanelCA
 		CheckBox[] bitsChecks;// = new CheckBox[] {b0Check, b1Check, b2Check };
 		int samp = 0, delay = 1; 
 
-		float vdd = -1; //Wartość napięcia zasilania przetwornika
+		float vdd = (float)4.75; //Wartość napięcia zasilania przetwornika
 
 		private void bitCheck(object sender, EventArgs e)
 		{
@@ -21,7 +21,6 @@ namespace PanelCA
 			//dodanie zaznaczonej/odznaczonej potegi dwojki
 			for (int i = 0, val = 1; i <= 11; i++, val <<= 1)
 				if (bitChecked == bitsChecks[i])
-					//samp += mult * Convert.ToInt32 (Math.Pow(2.0, i));
 					samp += mult * val;
 
 			//Aktualizacja pól DEC, HEX i U0teor
@@ -30,13 +29,13 @@ namespace PanelCA
 			if (vdd > 0 ) vddText_TextChanged(this, null);
 
 			//Ustawienie próbki i wypisanie danych do tablicy
-			dac.setSamp(samp);
-			addRow();
+			addRow(dac.setSamp(samp, adcReadCheck.Checked));
 		}
 
 		Single u0teor = 0;
 		private void vddText_TextChanged(object sender, EventArgs e)
 		{
+			//Single u0teor = 0;
 			if (vddText.Text == "") {
 				vdd = -1;
 				u0Label.Visible = false;
@@ -45,7 +44,7 @@ namespace PanelCA
 			else if (!u0Label.Visible) u0Label.Visible = true; 
 			
 			vdd = Convert.ToSingle(vddText.Text);
-			Decimal d = Decimal.Round(Convert.ToDecimal ((float)samp / (float)4095.0 * vdd), 4);
+			Decimal d = decimal.Round(Convert.ToDecimal ((float)samp / (float)4095.0 * vdd), 4);
 			
 			u0teor = Convert.ToSingle(d);
 			u0Label.Text = "U0 = " + d.ToString() + "[V]";
@@ -61,8 +60,7 @@ namespace PanelCA
 			bitsReload();
 
 			//Ustawienie próbki i wypisanie danych do tablicy
-			dac.setSamp(samp);
-			addRow();
+			addRow(dac.setSamp(samp, adcReadCheck.Checked));
 		}
 
 		private void decText_KeyUp(object sender, KeyEventArgs e)
@@ -74,8 +72,7 @@ namespace PanelCA
 			bitsReload();
 
 			//Ustawienie próbki i wypisanie danych do tablicy
-			dac.setSamp(samp);
-			addRow();
+			addRow(dac.setSamp(samp, adcReadCheck.Checked));
 		}
 
 		private void vddText_KeyPress(object sender, KeyPressEventArgs e)
@@ -116,8 +113,7 @@ namespace PanelCA
 			bitsReload();
 
 			//Ustawienie próbki i wypisanie danych do tablicy
-			dac.setSamp(samp);
-			addRow();
+			addRow(dac.setSamp(samp, adcReadCheck.Checked));
 		}
 
 		//int step = 0;
