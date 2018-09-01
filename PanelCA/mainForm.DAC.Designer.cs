@@ -6,13 +6,18 @@ using System.Threading;
 namespace PanelCA
 {
 	public partial class mainForm
+	//Część głównej klasy okna odpowiedzialna za sterowanie DAC
+
 	{
-		CheckBox[] bitsChecks;// = new CheckBox[] {b0Check, b1Check, b2Check };
+		CheckBox[] bitsChecks;
 		int samp = 0, delay = 1; 
 
 		float vdd = (float)4.75; //Wartość napięcia zasilania przetwornika
+		
+		//*****************************************************************************
 
 		private void bitCheck(object sender, EventArgs e)
+		//Zaznaczanie bitu w panelu
 		{
 			CheckBox bitChecked = sender as CheckBox; //rzut parametru sender na kontrolke Check
 			bitChecked.Text = (bitChecked.Checked) ? "1" : "0"; // zmiana bitu w nazwie kontrolki
@@ -32,8 +37,11 @@ namespace PanelCA
 			addRow(dac.setSamp(samp, adcReadCheck.Checked));
 		}
 
+		//-----------------------------------------------------------------------------
+
 		Single u0teor = 0;
 		private void vddText_TextChanged(object sender, EventArgs e)
+		//Zmiana wartości napięcia zasilania
 		{
 			//Single u0teor = 0;
 			if (vddText.Text == "") {
@@ -51,7 +59,10 @@ namespace PanelCA
 			
 		}
 
+		//-----------------------------------------------------------------------------
+
 		private void hexText_KeyUp(object sender, KeyEventArgs e)
+		//Zmiana wartości hexadecymalnej
 		{
 			if (hexText.Text == "") return;
 			samp = Convert.ToInt32(hexText.Text, 16);
@@ -63,7 +74,10 @@ namespace PanelCA
 			addRow(dac.setSamp(samp, adcReadCheck.Checked));
 		}
 
+		//-----------------------------------------------------------------------------
+
 		private void decText_KeyUp(object sender, KeyEventArgs e)
+		//Zmiana wartości dziesiętnej
 		{
 			if (decText.Text == "") return;
 			samp = Convert.ToInt32(decText.Text);
@@ -75,20 +89,7 @@ namespace PanelCA
 			addRow(dac.setSamp(samp, adcReadCheck.Checked));
 		}
 
-		private void vddText_KeyPress(object sender, KeyPressEventArgs e)
-		{
-			e.Handled = !(char.IsDigit(e.KeyChar) || char.IsControl(e.KeyChar) || e.KeyChar == ',')
-				|| (e.KeyChar == ',' && (sender as TextBox).Text.IndexOf(',') > -1);
-		}
-		private void decText_KeyPress(object sender, KeyPressEventArgs e)
-		{
-			e.Handled = !(char.IsDigit(e.KeyChar) || char.IsControl(e.KeyChar));
-		}
-		private void hexText_KeyPress(object sender, KeyPressEventArgs e)
-		{
-			e.Handled = !(char.IsDigit(e.KeyChar) || char.IsControl(e.KeyChar) 
-				|| ((e.KeyChar | ' ') >= 'a' && (e.KeyChar | ' ') <= 'f'));
-		}
+		//-----------------------------------------------------------------------------
 
 		void bitsReload()
 		//Ustawia wartość kontrolek typu Check dla poszczególnych bitów. Porównuje wynik operacji
@@ -100,6 +101,9 @@ namespace PanelCA
 			
 			vddText_TextChanged(this, null);
 		}
+		
+		//-----------------------------------------------------------------------------
+		
 		private void setSamp(int newSamp)
 		//Ustawienie zewnetrzne wartosci probki, uzywane przy tabeli wartości.
 		{
@@ -116,72 +120,12 @@ namespace PanelCA
 			addRow(dac.setSamp(samp, adcReadCheck.Checked));
 		}
 
-		//int step = 0;
-		const string arrowStr = " \u0011\u0006\u0006\u0006";
-		private void nextButt_Click(object sender, EventArgs e)
-		{
-			//pobieranie pola z wartościami
-			string[] lines = sampText.Lines; //zawarość pola
-			int rowsCnt = Convert.ToUInt16(lines.Length); //ilosc wierszy
-			if (rowsCnt == 0 || step >= rowsCnt) return; //spr czy nie jest na końcu
-			while (lines[step] == "") if (++step == rowsCnt) return; //inoruj puste linie
+		//-----------------------------------------------------------------------------
 
-			//[] arr = new int[len]; //wartosci probek
-			int beforeStep = step - 1;
-			if (step > 0 && lines[beforeStep].Contains(arrowStr))
-				lines[beforeStep] = lines[beforeStep].Substring(0, lines[beforeStep].Length - arrowStr.Length);
-			int samp = Convert.ToInt32(lines[step]);
-			/*
-			//konwersja wartosci
-			int j = 0;//indeks wartosci probek (bez pustych linii)
-			
-			for (int i = 0; i < len; i++, j++) {
-				if (lines[i] == "") j--;
-				else arr[j] = Convert.ToInt32(lines[i]);
-			}
-			*/
-
-			//if (j == 0) return;
-			/*
-			consSendText.AppendText("Zadaj serię " + j +" pomiarow..." + 
-				NL + "Opoznienie = " + delay + " [ms]" + NL);
-			*/
-			//wysylanie danych sesji
-			//dac.setSamps(delay, arr, j);
-			//dac.setSamp(samp);
-			lines[step++] += arrowStr;
-			//if (++step == rowsCnt) step = 0;
-			sampText.Lines = lines;
-			this.Refresh();
-			setSamp(samp);
-			/*
-			//Wskaznik postepu sesji
-			string line = "";
-			j = 0;
-			for (int i = 0; i < len; i++) {
-				if ((line = lines[i]) == "") continue;
-				lines[i] += " <--";
-				sampText.Lines = lines;
-				setSamp(arr[j++]);
-
-				this.Refresh();
-				Thread.Sleep (delay);
-				
-				lines[i] = lines[i].Substring(0, lines[i].Length - 4);
-				sampText.Lines = lines;*/
-			//}
-		}
-		/*private void backButt_Click(object sender, EventArgs e)
-		{
-			string[] lines = sampText.Lines; //zawarość pola
-			int rowsCnt = Convert.ToUInt16(lines.Length); //ilosc wierszy
-			if (rowsCnt == 0 || step > 0) return; //spr czy nie jest na poczatku
-			while (lines[step] == "") if (--step == 0) return; //inoruj puste linie
-
-		}*/
-		
 		int step = -1;
+		const string arrowStr = " ←";
 		private void nextbackButt_Click(object sender, EventArgs e)
+		//Poruszanie się po liście nastaw (sesja pomiarowa)
 		{
 			string[] lines = sampText.Lines; //zawarość pola
 
@@ -221,8 +165,11 @@ namespace PanelCA
 			sampText.Lines = lines;
 			this.Refresh();
 		}
+		
+		//-----------------------------------------------------------------------------
 				
 		private void ringButt_Click(object sender, EventArgs e)
+		//Generowanie kodu pierścieniowego
 		{
 			sampText.Clear();
 
@@ -231,11 +178,18 @@ namespace PanelCA
 				
 
 		}
+		
+		//-----------------------------------------------------------------------------
+
 		private void dacScroll_Scroll(object sender, ScrollEventArgs e)
 		{
 			setSamp(dacScroll.Value);
 		}
+
+		//-----------------------------------------------------------------------------
+
 		private void button1_Click(object sender, EventArgs e)
+		//Wersja prototypowa generowania
 		{
 			sampText.Clear();
 			int step = Convert.ToInt32(textBox1.Text);
@@ -243,6 +197,66 @@ namespace PanelCA
 				sampText.AppendText (Convert.ToString(samp) + NL);
 			}
 		}
+
+		//-----------------------------------------------------------------------------
+
+		/*
+		Wersja sesji pomiarowej przed zmianą wymagań przez promotora
+
+
+
+		//int step = 0;
+		const string arrowStr = " \u0011\u0006\u0006\u0006";
+		private void nextButt_Click(object sender, EventArgs e)
+		{
+			//pobieranie pola z wartościami
+			string[] lines = sampText.Lines; //zawarość pola
+			int rowsCnt = Convert.ToUInt16(lines.Length); //ilosc wierszy
+			if (rowsCnt == 0 || step >= rowsCnt) return; //spr czy nie jest na końcu
+			while (lines[step] == "") if (++step == rowsCnt) return; //inoruj puste linie
+
+			//[] arr = new int[len]; //wartosci probek
+			int beforeStep = step - 1;
+			if (step > 0 && lines[beforeStep].Contains(arrowStr))
+				lines[beforeStep] = lines[beforeStep].Substring(0, lines[beforeStep].Length - arrowStr.Length);
+			int samp = Convert.ToInt32(lines[step]);
+
+			//if (j == 0) return;
+
+			//wysylanie danych sesji
+			//dac.setSamps(delay, arr, j);
+			//dac.setSamp(samp);
+			lines[step++] += arrowStr;
+			//if (++step == rowsCnt) step = 0;
+			sampText.Lines = lines;
+			this.Refresh();
+			setSamp(samp);
+			
+			//Wskaznik postepu sesji
+			string line = "";
+			j = 0;
+			for (int i = 0; i < len; i++) {
+				if ((line = lines[i]) == "") continue;
+				lines[i] += " <--";
+				sampText.Lines = lines;
+				setSamp(arr[j++]);
+
+				this.Refresh();
+				Thread.Sleep (delay);
+				
+				lines[i] = lines[i].Substring(0, lines[i].Length - 4);
+				sampText.Lines = lines;
+			}
+		}
+		private void backButt_Click(object sender, EventArgs e)
+		{
+			string[] lines = sampText.Lines; //zawarość pola
+			int rowsCnt = Convert.ToUInt16(lines.Length); //ilosc wierszy
+			if (rowsCnt == 0 || step > 0) return; //spr czy nie jest na poczatku
+			while (lines[step] == "") if (--step == 0) return; //inoruj puste linie
+
+		} */
+		
 		
 	}
 }

@@ -5,37 +5,44 @@ using System.Text;
 using System.Threading;
 
 namespace PanelCA
+
 {
 	public class Dac
-	{
-		//*****************************************************************************
+	//Zawiera definicję klasy obiektu przerwornika cyfrowo-analogowego z podstawową
+	//funkcjonalnością
 
-		public Com com; //Obiekt komunikacji po porcie COM
-		System.Windows.Forms.TextBox consoleResp, consoleReq; //Konsola do wypisywania inf zwrotnej
-		//private string NL = "\r\n"; //Nowa linia dla komunikacji z platformą
+	{
+		private Com com; //Obiekt komunikacji po porcie COM
+		//Konsola do wypisywania inf zwrotnej
+		private System.Windows.Forms.TextBox consoleResp, consoleReq;
+		private System.Windows.Forms.DataVisualization.Charting.Chart adcChart;
+
 		private string NLform; //Nowa linia dla komunikacji z platformą
 		
 		const byte MASKL =  0x00FF; //Maska dla młodszej części słowa dla DAC 
 		const byte MASKH =  0x000F; //Maska dla starszej części słowa dla DAC
 		
 		//*****************************************************************************
+		
+		public Dac (Com com, System.Windows.Forms.TextBox consoleReq, 
+					System.Windows.Forms.TextBox consoleResp, 
+					System.Windows.Forms.DataVisualization.Charting.Chart adcChart, 
+					string NLf) 
 		//Konstruktor parametryczy, przyjmuje jako parametry: obiekt typu Com umożliwiający
 		//wysłanie rozkazów do platformy, obiekt TextBox do wypisywania informacji zwrotnej.
-		
-		public Dac (Com com, System.Windows.Forms.TextBox consoleReq, System.Windows.Forms.TextBox consoleResp, mainForm form) 
 		{
-			NLform = form.NL;
+			NLform = NLf;
 			this.com = com;
 			this.consoleResp = consoleResp;
 			this.consoleReq = consoleReq;
-
+			this.adcChart = adcChart;
 		}
 		
 		//*****************************************************************************
-		//Konwertuje wartość do postaci 12b próbki (2 znaki 1B) dla DAC
-		//Zwraca rozkaz w postaci ciągu 2 znaków
 
 		private string sampTo2Chars (int samp)
+		//Konwertuje wartość do postaci 12b próbki (2 znaki 1B) dla DAC
+		//Zwraca rozkaz w postaci ciągu 2 znaków
 		{
 			char L = Convert.ToChar (samp & MASKL); //Młodszy znak
 			char H = Convert.ToChar ((samp >> 8) & MASKH); //Starszy znak
@@ -43,10 +50,10 @@ namespace PanelCA
 		}
 
 		//-----------------------------------------------------------------------------
-		//Konwetuje wartość do postaci 2 słów 1B
-		//Zwraca rozkaz w postaci ciągu 2 znaków
 
 		private string intTo2Chars (int x)
+		//Konwetuje wartość do postaci 2 słów 1B
+		//Zwraca rozkaz w postaci ciągu 2 znaków
 		{
 			char L = Convert.ToChar (x & MASKL);
 			char H = Convert.ToChar ((x >> 8) & MASKL);
@@ -54,9 +61,9 @@ namespace PanelCA
 		}
 
 		//-----------------------------------------------------------------------------
+		public int setSamp (int samp, bool returnADC)
 		//Składa rozkaz dla trybu ustawiania pojedyńczej próbki, wypisuje wiadomość powrotną
 		//w konsoli (TextBox)
-		public int setSamp (int samp, bool returnADC)
 		{
 			consoleReq.Text += "Ustaw DAC: " + Convert.ToString(samp) + NLform;
 			  
@@ -76,15 +83,18 @@ namespace PanelCA
 		}
 		
 		//-----------------------------------------------------------------------------
-	
+		Thread adcMonit;
+
 		public void setSamps (int delay, int[] arr, int len)
 		{
 			if (len == 0) return;
 			//Wysylanie trybu sesji ilosci bajtow (l. probek*2) oraz opoznienia
 			string comand = "\x12" + intTo2Chars(len * 2) + intTo2Chars(delay);
-			byte x = Convert.ToByte(comand[4]);
-			com.sendStr(comand, false);
-			
+			consoleResp.Text += com.sendStr(comand, true) + NLform;
+			adcMonit = new Thread(new ThreadStart(adcMonitor));
+			adcMonit.Start();
+
+			/*
 			len--;
 			for (int i = 0; i < len; i++) {
 				com.sendSamp(sampTo2Chars(arr[i]));
@@ -92,7 +102,31 @@ namespace PanelCA
 			}
 			//Wysyłanie ostatniej próbki
 			consoleResp.Text += com.sendStr(sampTo2Chars(arr[len]), true);
+		*/
+		}
 		
+		public void stopGen()
+		{
+			adcMonit.Suspend();		
+			consoleResp.Text += com.sendStr("\x12", true) + NLform;
+		}
+		
+		//-----------------------------------------------------------------------------
+		
+		ulong timeAxis = 0;
+		
+		public void adcMonitor()
+		//ToDO!!!! PRzesyłanie prboki wartoscia po bajtach	
+		{
+			while (true) {
+				string resp = com.readWhenResponse() + " ";
+				consoleResp.Invoke(new Action(() => consoleResp.Text += resp));
+				
+				//Wypisywanie otrzymanej próbki na wykres
+				int samp = Convert.ToInt32(resp);
+				adcChart.Series.Add("newSeries");
+				adcChart.Series["newSeries"].Points.AddXY((double)timeAxis++, (double)samp / 1023.0 * 4.75);
+			}
 		}
 	}
 }

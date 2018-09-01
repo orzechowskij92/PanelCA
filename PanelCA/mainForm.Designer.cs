@@ -33,9 +33,6 @@
 			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
 			System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
 			System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-			System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint1 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, 1D);
-			System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint2 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, 1D);
-			System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint3 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, 1D);
 			this.portsCBox = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.connButt = new System.Windows.Forms.Button();
@@ -121,6 +118,7 @@
 			this.rekordsCheck = new System.Windows.Forms.CheckBox();
 			this.adcReadCheck = new System.Windows.Forms.CheckBox();
 			this.adcChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+			this.genButt = new System.Windows.Forms.Button();
 			this.comGBox.SuspendLayout();
 			this.dacGBox.SuspendLayout();
 			this.groupBox1.SuspendLayout();
@@ -1025,6 +1023,9 @@
 			// dacGrid
 			// 
 			this.dacGrid.AllowUserToAddRows = false;
+			this.dacGrid.AllowUserToDeleteRows = false;
+			this.dacGrid.AllowUserToResizeColumns = false;
+			this.dacGrid.AllowUserToResizeRows = false;
 			this.dacGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
 			this.dacGrid.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
 			dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
@@ -1042,7 +1043,6 @@
             this.Column2,
             this.Column3});
 			this.dacGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
-			this.dacGrid.Enabled = false;
 			this.dacGrid.Location = new System.Drawing.Point(229, 167);
 			this.dacGrid.Name = "dacGrid";
 			dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
@@ -1110,6 +1110,8 @@
 			// rekordsCheck
 			// 
 			this.rekordsCheck.AutoSize = true;
+			this.rekordsCheck.Checked = true;
+			this.rekordsCheck.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.rekordsCheck.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.rekordsCheck.Location = new System.Drawing.Point(229, 147);
 			this.rekordsCheck.Name = "rekordsCheck";
@@ -1122,6 +1124,8 @@
 			// adcReadCheck
 			// 
 			this.adcReadCheck.AutoSize = true;
+			this.adcReadCheck.Checked = true;
+			this.adcReadCheck.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.adcReadCheck.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.adcReadCheck.Location = new System.Drawing.Point(437, 124);
 			this.adcReadCheck.Name = "adcReadCheck";
@@ -1139,19 +1143,28 @@
 			series1.ChartArea = "ChartArea1";
 			series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
 			series1.Name = "Series1";
-			series1.Points.Add(dataPoint1);
-			series1.Points.Add(dataPoint2);
-			series1.Points.Add(dataPoint3);
 			this.adcChart.Series.Add(series1);
-			this.adcChart.Size = new System.Drawing.Size(617, 206);
+			this.adcChart.Size = new System.Drawing.Size(456, 207);
 			this.adcChart.TabIndex = 63;
 			this.adcChart.Text = "chart1";
+			// 
+			// genButt
+			// 
+			this.genButt.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.genButt.Location = new System.Drawing.Point(502, 614);
+			this.genButt.Name = "genButt";
+			this.genButt.Size = new System.Drawing.Size(101, 30);
+			this.genButt.TabIndex = 77;
+			this.genButt.Text = "Generuj!";
+			this.genButt.UseVisualStyleBackColor = true;
+			this.genButt.Click += new System.EventHandler(this.genButt_Click);
 			// 
 			// mainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(650, 832);
+			this.ClientSize = new System.Drawing.Size(650, 833);
+			this.Controls.Add(this.genButt);
 			this.Controls.Add(this.adcChart);
 			this.Controls.Add(this.adcReadCheck);
 			this.Controls.Add(this.rekordsCheck);
@@ -1194,7 +1207,7 @@
 		private System.Windows.Forms.Button refreshButt;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.TextBox consRecivText;
+		public System.Windows.Forms.TextBox consRecivText;
 		private System.Windows.Forms.TextBox consSendText;
 		  private System.Windows.Forms.GroupBox dacGBox;
 		  private System.Windows.Forms.Button backButt;
@@ -1271,6 +1284,7 @@
 		private System.Windows.Forms.Button nextButt;
 		private System.Windows.Forms.CheckBox adcReadCheck;
 		private System.Windows.Forms.DataVisualization.Charting.Chart adcChart;
+		private System.Windows.Forms.Button genButt;
 	}
 }
 
